@@ -1,1 +1,11 @@
-<app-header (connectEvent)="connectWallet()"></app-header>
+<app-header (connectEvent)="connectWallet()" (diconnectEvent)="disconnect()"></app-header>
+<div class="card m-4">
+  <ul class="nav nav-pills nav-fill">
+    <li class="nav-item">
+      <a class="nav-link active" aria-current="page" href="#">All NFTS</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Uploads</a>
+    </li>
+  </ul>
+</div>

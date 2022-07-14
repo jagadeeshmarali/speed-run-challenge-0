@@ -36,4 +36,8 @@ export class AppComponent {
       console.log(error);
     }
   }
+  async disconnect() {
+    console.log("=============")
+    // await window.ethereum.;
+  }
 }

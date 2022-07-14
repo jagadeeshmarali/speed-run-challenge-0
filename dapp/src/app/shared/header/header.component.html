@@ -2,7 +2,7 @@
   <a class="navbar-brand">Navbar</a>
   <ng-container *ngIf="sessionService.currentUser;else button">
     <div class="col">
-
+      <button (click)="emitdisconectEvent()">Disconnect</button>
     </div>
     <span> {{sessionService.currentUser.balance}} </span>
     <i class="fas fa-wallet"></i>

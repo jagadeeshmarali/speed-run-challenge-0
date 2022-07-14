@@ -10,10 +10,15 @@ import { trim } from '../../utils';
 export class HeaderComponent {
   public trim = trim;
   @Output() connectEvent = new EventEmitter<any>();
+  @Output() diconnectEvent = new EventEmitter<any>();
 
   constructor(public sessionService: SessionService) { }
 
   emitconnectEvent() {
     this.connectEvent.emit();
+  }
+  emitdisconectEvent() {
+    this.diconnectEvent.emit();
+
   }
 }

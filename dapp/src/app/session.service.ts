@@ -4,7 +4,7 @@ import Identicon from "identicon.js";
 import { User } from "./interfaces";
 
 declare const window: any;
-const provider = new ethers.providers.Web3Provider(window.ethereum);
+
 
 @Injectable({
   providedIn: "root"
@@ -12,12 +12,13 @@ const provider = new ethers.providers.Web3Provider(window.ethereum);
 export class SessionService {
   accounts: string[] = [];
   currentUser: User = null;
+  provider = new ethers.providers.Web3Provider(window.ethereum);
   constructor() { }
   async getAccounts() {
-    this.accounts = await provider.listAccounts();
+    this.accounts = await this.provider.listAccounts();
   }
   async getBalance(address: string) {
-    let balanceObj = await provider.getBalance(address)
+    let balanceObj = await this.provider.getBalance(address)
     return Number(parseFloat(ethers.utils.formatEther(balanceObj)).toFixed(3))
   }
   async fetchCurrentUser(address: string) {
