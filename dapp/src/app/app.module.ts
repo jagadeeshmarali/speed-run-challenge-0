@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { HeaderModule } from './shared';
 import { AllNFTSComponent } from './components/all-nfts/all-nfts.component';
 import { UploadsComponent } from './components/uploads/uploads.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { UploadsComponent } from './components/uploads/uploads.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HeaderModule
+    HeaderModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
