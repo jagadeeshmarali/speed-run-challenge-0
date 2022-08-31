@@ -9,6 +9,7 @@ declare const window: any;
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  sessionFetched = false;
   title = 'web3-angular-starter-kit';
   constructor(public sessionService: SessionService,) {
     this.init();
@@ -23,9 +24,13 @@ export class AppComponent {
     }
   }
   fetchSession() {
+    this.sessionFetched = false;
     this.sessionService.getAccounts().then(() => {
       console.log("fetching accounts ...");
-      this.sessionService.fetchCurrentUser(this.sessionService.accounts[0]);
+      this.sessionService.fetchCurrentUser(this.sessionService.accounts[0]).then(() => {
+        this.sessionFetched = true;
+      });
+
     });
   }
   async connectWallet() {

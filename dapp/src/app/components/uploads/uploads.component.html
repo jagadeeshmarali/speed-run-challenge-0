@@ -1,6 +1,6 @@
 <div class="d-flex flex-row-reverse">
   <button class="btn btn-primary m-1 btn-sm" (click)="openPopup()">Upload</button>
-  <button class="btn btn-primary m-1">Refresh</button>
+  <button class="btn btn-primary m-1" (click)="getUploads()">Refresh</button>
 </div>
 <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayStyle}">
   <div class="modal-dialog modal-dialog-scrollable">
@@ -34,29 +34,39 @@
     <thead>
       <tr>
         <th scope="col">#</th>
+        <th scope="col"></th>
         <th scope="col">Hash</th>
         <th scope="col">Description</th>
         <th scope="col">Size</th>
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <th scope="row">1</th>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>@mdo</td>
-      </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
-      </tr>
-      <tr>
-        <th scope="row">3</th>
-        <td colspan="2">Larry the Bird</td>
-        <td>@twitter</td>
-      </tr>
+      <ng-container *ngIf="myFiles.length>0;else nofiles">
+        <tr *ngFor="let file of myFiles;let i = index">
+          <th scope="row">{{i+1}}</th>
+          <td>
+            <div style="height: 30px; width:30px">
+              <img style="vertical-align: bottom;" width="100%" height="100%"
+                src="https://ipfs.io/ipfs/{{file[2]}}?fileName={{file[2]}}" alt="...">
+            </div>
+          </td>
+          <td>
+            <a href="https://ipfs.io/ipfs/{{file[2]}}?fileName={{file[2]}}" target="_blank">{{file[2]}}</a>
+          </td>
+          <td>{{file[3]}}</td>
+          <td>{{file[4]}} Kb</td>
+          <td>
+            <button class="btn btn-primary m-1"
+              (click)="mint('https://ipfs.io/ipfs/{{file[2]}}?fileName={{file[2]}}')">Mint</button>
+            <button class="btn btn-primary m-1" (click)="burn(file[0].toNumber())">Burn</button>
+          </td>
+        </tr>
+      </ng-container>
+      <ng-template #nofiles>
+        <td colspan="4">
+          <h3>No Files Found</h3>
+        </td>
+      </ng-template>
     </tbody>
   </table>
 

@@ -15,6 +15,16 @@ contract YourCollectible is
     Ownable,
     Upload
 {
+    mapping(uint256 => bool) uploadedCollectableMintedStatus;
+
+    function _updateUploadCollectable(uint256 tokenId, bool status) private {
+        uploadedCollectableMintedStatus[tokenId] = status;
+    }
+
+    modifier checkminted(uint256 tokenId) {
+        require(!uploadedCollectableMintedStatus[tokenId]);
+        _;
+    }
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIdCounter;
 
@@ -26,6 +36,18 @@ contract YourCollectible is
         return "https://ipfs.io/ipfs/";
     }
 
+    // function mintItem(address to, uint256 tokenId) public returns (uint256) {
+    //     // _tokenIdCounter.increment();
+    //     // uint256 tokenId = _tokenIdCounter.current();
+    //     _safeMint(to, tokenId);
+    //     File memory file = files[msg.sender][tokenId];
+    //     _setTokenURI(
+    //         tokenId,
+    //         string(abi.encodePacked(_baseURI(), " ", file.hash))
+    //     );
+    //     _updateUploadCollectable(tokenId, true);
+    //     return tokenId;
+    // }
     function mintItem(address to, string memory uri) public returns (uint256) {
         _tokenIdCounter.increment();
         uint256 tokenId = _tokenIdCounter.current();

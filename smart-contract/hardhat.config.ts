@@ -1,6 +1,11 @@
 import { task } from "hardhat/config";
-import "@nomiclabs/hardhat-waffle";
-import 'hardhat-watcher'
+// import "@nomiclabs/hardhat-waffle";
+import 'hardhat-watcher';
+import '@openzeppelin/hardhat-upgrades';
+import '@nomiclabs/hardhat-ethers';
+import '@nomiclabs/hardhat-etherscan';
+import dotenv from "dotenv"
+dotenv.config()
 
 
 // This is a sample Hardhat task. To learn how to create your own go to
@@ -29,4 +34,21 @@ module.exports = {
       tasks: ['node'],
     },
   },
+  networks: {
+    rinkeby: {
+      url: "https://rinkeby.infura.io/v3/1dc931d842b449c0a674b754ee15aafd",
+      accounts: [process.env.ACCOUNT_PRIVATE_KEY]
+    },
+    matic: {
+      url: "https://polygon-rpc.com/",
+      accounts: [process.env.ACCOUNT_PRIVATE_KEY]
+    },
+    matic_mumbai: {
+      url: "https://matic-mumbai.chainstacklabs.com",
+      accounts: [process.env.ACCOUNT_PRIVATE_KEY]
+    }
+  },
+  etherscan: {
+    apiKey: process.env.POLYGONSCAN_API_KEY
+  }
 };

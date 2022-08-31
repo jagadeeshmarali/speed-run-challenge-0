@@ -2,7 +2,7 @@ import { environment } from './../../../environments/environment';
 import { Component } from "@angular/core";
 import { SessionService } from "../../session.service";
 import { IpfsService } from "../../services/ipfs.service";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { abi } from '../../abi/abi';
 
 @Component({
@@ -13,7 +13,10 @@ export class UploadsComponent {
   displayStyle = "none";
   description = "";
   public fileBuffer: any;
-  constructor(private ipfsService: IpfsService, private sessionService: SessionService) { }
+  myFiles = [];
+  constructor(private ipfsService: IpfsService, private sessionService: SessionService) {
+    this.getUploads();
+  }
   openPopup() {
     this.displayStyle = "block";
   }
@@ -38,4 +41,25 @@ export class UploadsComponent {
     });
 
   }
+
+  async getUploads() {
+    let signer = this.sessionService.provider.getSigner(this.sessionService.currentUser.account);
+    let contract = new ethers.Contract(environment.contract_address, abi.abi, signer);
+    contract.functions.getMyFiles().then(data => {
+      this.myFiles = data[0];
+      console.log(this.myFiles)
+      this.myFiles.forEach(e => {
+        console.log(e[0].toNumber())
+      })
+    })
+
+  }
+  mint(uri) {
+    let signer = this.sessionService.provider.getSigner(this.sessionService.currentUser.account);
+    let contract = new ethers.Contract(environment.contract_address, abi.abi, signer);
+    contract.mintItem(this.sessionService.currentUser.account, uri).then(data => {
+      console.log(data);
+    })
+  }
+  burn(tokenId) { }
 }
