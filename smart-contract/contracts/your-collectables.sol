@@ -1,18 +1,26 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+// import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+// import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+// import "@openzeppelin/contracts/utils/Counters.sol";
+// import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+// import "@openzeppelin/contracts/access/Ownable.sol";
 import "./uploads.sol";
 
+import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
+
 contract YourCollectible is
-    ERC721,
-    ERC721Enumerable,
-    ERC721URIStorage,
-    Ownable,
+    ERC721Upgradeable,
+    ERC721EnumerableUpgradeable,
+    ERC721URIStorageUpgradeable,
+    OwnableUpgradeable,
     Upload
 {
     mapping(uint256 => bool) uploadedCollectableMintedStatus;
@@ -25,12 +33,28 @@ contract YourCollectible is
         require(!uploadedCollectableMintedStatus[tokenId]);
         _;
     }
-    using Counters for Counters.Counter;
-    Counters.Counter private _tokenIdCounter;
+    using CountersUpgradeable for CountersUpgradeable.Counter;
+    CountersUpgradeable.Counter private _tokenIdCounter;
 
-    constructor(string memory name, string memory symbol)
-        ERC721(name, symbol)
-    {}
+    // constructor(string memory name, string memory symbol)
+    //     ERC721(name, symbol)
+    // {}
+
+    // function initilizer(string memory name, string memory symbol) public {
+    //     ERC721(name, symbol);
+    // }
+    function initialize(
+        string memory name,
+        string memory symbol,
+        uint256 filesCount
+    ) public initializer {
+        __ERC721_init(name, symbol);
+        __Ownable_init();
+        filesCount = filesCount;
+        // __UUPSUpgradeable_init();
+
+        // setBaseURI(baseURI);
+    }
 
     function _baseURI() internal pure override returns (string memory) {
         return "https://ipfs.io/ipfs/";
@@ -60,13 +84,22 @@ contract YourCollectible is
         address from,
         address to,
         uint256 tokenId
-    ) internal override(ERC721, ERC721Enumerable) {
+    ) internal override(ERC721Upgradeable, ERC721EnumerableUpgradeable) {
         super._beforeTokenTransfer(from, to, tokenId);
+    }
+
+    function _beforeConsecutiveTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId,
+        uint96 size
+    ) internal override(ERC721Upgradeable, ERC721EnumerableUpgradeable) {
+        super._beforeConsecutiveTokenTransfer(from, to, tokenId, size);
     }
 
     function _burn(uint256 tokenId)
         internal
-        override(ERC721, ERC721URIStorage)
+        override(ERC721Upgradeable, ERC721URIStorageUpgradeable)
     {
         super._burn(tokenId);
     }
@@ -74,7 +107,7 @@ contract YourCollectible is
     function tokenURI(uint256 tokenId)
         public
         view
-        override(ERC721, ERC721URIStorage)
+        override(ERC721Upgradeable, ERC721URIStorageUpgradeable)
         returns (string memory)
     {
         return super.tokenURI(tokenId);
@@ -83,7 +116,7 @@ contract YourCollectible is
     function supportsInterface(bytes4 interfaceId)
         public
         view
-        override(ERC721, ERC721Enumerable)
+        override(ERC721Upgradeable, ERC721EnumerableUpgradeable)
         returns (bool)
     {
         return super.supportsInterface(interfaceId);

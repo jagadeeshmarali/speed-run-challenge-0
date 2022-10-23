@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 contract Upload {
-    uint256 public filesCount = 0;
+    uint256 public filesCount;
 
     mapping(address => File[]) public files;
 

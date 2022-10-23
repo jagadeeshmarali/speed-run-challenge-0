@@ -4,6 +4,7 @@ import { SessionService } from "../../session.service";
 import { IpfsService } from "../../services/ipfs.service";
 import { BigNumber, ethers } from "ethers";
 import { abi } from '../../abi/abi';
+import { NFTStorageService } from '../../services/nft.storage.service';
 
 @Component({
   selector: "uploads",
@@ -14,7 +15,7 @@ export class UploadsComponent {
   description = "";
   public fileBuffer: any;
   myFiles = [];
-  constructor(private ipfsService: IpfsService, private sessionService: SessionService) {
+  constructor(private nftstorageService: NFTStorageService, private sessionService: SessionService) {
     this.getUploads();
   }
   openPopup() {
@@ -31,12 +32,15 @@ export class UploadsComponent {
     }
   }
   async upload() {
-    let ipfsData = await this.ipfsService.upload(this.fileBuffer);
+    let ipfsData = await this.nftstorageService.upload(this.fileBuffer);
     console.log(ipfsData);
     console.log(this.sessionService.currentUser.account);
     let signer = this.sessionService.provider.getSigner(this.sessionService.currentUser.account);
     let contract = new ethers.Contract(environment.contract_address, abi.abi, signer);
-    contract.functions.uploadFile(ipfsData.cid.toString(), "text.txt", ipfsData.size, "text/plain", this.description).then(data => {
+    contract.functions.uploadFile(ipfsData.ipnft.toString(), "text.txt", 1, "text/plain", this.description, {
+      gasLimit: 100000,
+      // nonce: nonce || undefined,
+    }).then(data => {
       console.log(data);
     });
 

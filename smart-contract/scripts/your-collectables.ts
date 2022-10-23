@@ -3,8 +3,8 @@ import { ethers, upgrades } from "hardhat";
 async function main() {
   const contract = await ethers.getContractFactory("YourCollectible");
   console.log("Deploying Contract ...");
-  // const c = await upgrades.deployProxy(contract, { constructorArgs: ["Your Collectables", "YCB"] })
-  const c = await contract.deploy("Your Collectable", "YCB");
+  const c = await upgrades.deployProxy(contract, ["Your Collectable", "YCB", 0], { initializer: "initialize" });
+  // const c = await contract.deploy("Your Collectable", "YCB");
 
   await c.deployed();
 
